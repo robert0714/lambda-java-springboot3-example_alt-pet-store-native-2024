@@ -62,11 +62,19 @@ You can now simply execute GET on this URL and see the listing fo all pets.
   * Video: [Serverless Java with Spring by Maximilian Schellhorn & Dennis Kieselhorst @ Spring I/O 2024](https://youtu.be/AFIHug_HujI)
   * Slide: https://speakerdeck.com/deki/serverless-java-with-spring
     * Method 1: Handling via functions
-      * Tradition
-      * Handling viaSpring Cloud Functions
+      * [Tradition](https://docs.aws.amazon.com/zh_tw/lambda/latest/dg/java-handler.html#java-best-practices)
+      * Handling via Spring Cloud Functions ( Spring Cloud AWS is designed for non-lambda , other aws services)
       * Multiple functions
     * Method 1: HTTP adapter
       * AWS Serverless Java: [serverless-java-container](https://github.com/aws/serverless-java-container)
+    * Summary    
+      |Method|Handling via functions|HTTP adapter|
+      |------|--------------------------------|----------------------|
+      |Approach|Directly deserialize JSON payloads into Java objects without involving HTTP request/response abstractions.|An adapter transforms events into HTTP request/response objects (e.g., Jakarta Servlet API).|
+      |Usage|Process content using event-specific code.|Retains compatibility with existing HTTP-based frameworks.|
+      |Strengths|1. Well-suited for non-HTTP use cases.<br/>2. Standardized for serverless or event-driven architectures.|Enables reuse of existing code and frameworks without modification|
+      |Weaknesses|More challenging to adapt existing applications and frameworks that rely on HTTP constructs.|Introduces performance overhead due to the additional transformation layer.|
+* [2022 Reduce Java cold starts by 10x with AWS Lambda](https://youtu.be/Y5b8_KToeDY?t=1163)
 * Other implements
   * Spring Cloud AWS 3
     * https://github.com/awspring/spring-cloud-aws
@@ -75,6 +83,7 @@ You can now simply execute GET on this URL and see the listing fo all pets.
     * baeldung
        * [github](https://github.com/eugenp/tutorials/tree/master/spring-cloud-modules/spring-cloud-aws-v3) 
   * Spring Cloud Function
+    * LocalStack: https://docs.localstack.cloud/user-guide/integrations/spring-cloud-function/ 
     * Recommended books
       * [Practical Spring Cloud Function: Developing Cloud-Native Functions for Multi-Cloud and Hybrid-Cloud Environments](https://link.springer.com/book/10.1007/978-1-4842-8913-6) ![cover](https://learning.oreilly.com/library/cover/9781484289136/250w/)
 # TEARING DOWN RESOURCES
