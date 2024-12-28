@@ -51,13 +51,32 @@ You can now simply execute GET on this URL and see the listing fo all pets.
 
 ## Reference
 * https://github.com/aws/serverless-java-container/wiki/Quick-start---Spring-Boot3
-* Orign source: 
-  * https://github.com/aws/serverless-java-container/tree/main/samples/springboot3/pet-store-native
-  * https://aws.amazon.com/cn/blogs/china/re-platforming-java-applications-using-the-updated-aws-serverless-java-container/
-  * https://catalog.workshops.aws/java-on-aws-lambda/en-US/02-accelerate/graal-plain-java
-  * https://stackoverflow.com/questions/69906369/sam-cli-and-quarkus-var-task-bootstrap-no-such-file-or-directory
-  * https://stackoverflow.com/questions/64749387/micronaut-graalvm-native-image-lambda-fails-with-an-error-error-fork-exec-va
-
+  * Orign source: 
+    * https://github.com/aws/serverless-java-container/tree/main/samples/springboot3/pet-store-native
+  * related articles 
+    * https://aws.amazon.com/cn/blogs/china/re-platforming-java-applications-using-the-updated-aws-serverless-java-container/
+    * https://catalog.workshops.aws/java-on-aws-lambda/en-US/02-accelerate/graal-plain-java
+    * https://stackoverflow.com/questions/69906369/sam-cli-and-quarkus-var-task-bootstrap-no-such-file-or-directory
+    * https://stackoverflow.com/questions/64749387/micronaut-graalvm-native-image-lambda-fails-with-an-error-error-fork-exec-va
+* Serverless Java with Spring
+  * Video: [Serverless Java with Spring by Maximilian Schellhorn & Dennis Kieselhorst @ Spring I/O 2024](https://youtu.be/AFIHug_HujI)
+  * Slide: https://speakerdeck.com/deki/serverless-java-with-spring
+    * Method 1: Handling via functions
+      * Tradition
+      * Handling viaSpring Cloud Functions
+      * Multiple functions
+    * Method 1: HTTP adapter
+      * AWS Serverless Java: [serverless-java-container](https://github.com/aws/serverless-java-container)
+* Other implements
+  * Spring Cloud AWS 3
+    * https://github.com/awspring/spring-cloud-aws
+    * Video
+      * Spring I/O 2024: [Spring Cloud AWS 3 upgrade and customisation for over 100 teams at Ocado Technology by M. Telepchuk](https://youtu.be/-PgFoRGaa6s)
+    * baeldung
+       * [github](https://github.com/eugenp/tutorials/tree/master/spring-cloud-modules/spring-cloud-aws-v3) 
+  * Spring Cloud Function
+    * Recommended books
+      * [Practical Spring Cloud Function: Developing Cloud-Native Functions for Multi-Cloud and Hybrid-Cloud Environments](https://link.springer.com/book/10.1007/978-1-4842-8913-6) ![cover](https://learning.oreilly.com/library/cover/9781484289136/250w/)
 # TEARING DOWN RESOURCES
 When you run `sam deploy`, it creates or updates a CloudFormation `stack`—a set of resources that has a name, which you’ve seen already with the `--stack-name` parameter of `sam deploy`.
 
@@ -104,10 +123,58 @@ vagrant@sam:~$ curl --location 'http://127.0.0.1:3000/pets' \
   "breed": "Norwegian Elkhound"
 }'
 ```
+
+## GraalVM Native Image
 ### Micronaut GraalVM Native Image: Lambda fails with an error "Error: fork/exec /var/task/bootstrap: no such file or directory"
 If you ecounter the below error:  
 `Error: fork/exec /var/task/bootstrap: no such file or directory Runtime.InvalidEntrypoint`
 
 If this is the issue then you can fix it by using the linux command: `dos2unix bootstrap` on your bootstrap file and then rebuild the native image.
 
+### NativeHints
+* NativeHintsConfiguration
+  ```java
+  @Configuration
+  public class NativeHintsConfiguration implements RuntimeHintsRegistrar {
+    @Override
+    public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+
+        // Affect compilation
+        hints.reflection().registerType(
+            com.google.maps.DirectionsApi.Response.class,
+            MemberCategory.values());  
+        hints.reflection().registerType(
+        	 com.google.maps.model.GeocodedWaypoint.class,
+             MemberCategory.values());
+        hints.reflection().registerType(
+        	 com.google.maps.model.DirectionsRoute.class,
+             MemberCategory.values());
+        hints.reflection().registerType(
+        	 com.google.maps.model.Bounds.class,
+             MemberCategory.values());	
+        hints.reflection().registerType(
+        	 com.google.maps.model.DirectionsLeg.class,
+             MemberCategory.values());		
+        hints.reflection().registerType(
+        	 com.google.maps.model.DirectionsStep.class,
+             MemberCategory.values());
+        hints.reflection().registerType(
+        	 com.google.maps.model.EncodedPolyline.class,
+             MemberCategory.values());	
+
+         // Affect our result
+        hints.reflection().registerType(
+        		com.XXXXXXX.distance_calculator.model.RouteResult.class, 
+                MemberCategory.values());     
+    }
+  }
+  ```
+  * Application
+  ```java
+  @SpringBootApplication
+  @Import({ DistanceController.class })
+  @ImportRuntimeHints(NativeHintsConfiguration.class)   // Affect compilation
+  public class Application {
+  (ommitted...)
+  ```  
 
