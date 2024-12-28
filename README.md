@@ -65,7 +65,7 @@ You can now simply execute GET on this URL and see the listing fo all pets.
       * [Tradition](https://docs.aws.amazon.com/zh_tw/lambda/latest/dg/java-handler.html#java-best-practices)
       * Handling via Spring Cloud Functions ( Spring Cloud AWS is designed for non-lambda , other aws services)
       * Multiple functions
-    * Method 1: HTTP adapter
+    * Method 2: HTTP adapter
       * AWS Serverless Java: [serverless-java-container](https://github.com/aws/serverless-java-container)
     * Summary    
       |Method|Handling via functions|HTTP adapter|
