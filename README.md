@@ -26,17 +26,21 @@ Before starting the build, you must clone or download the code in **pet-store-na
 
 1. Change into the project directory: `samples/springboot3/pet-store-native`
 2. Run the following to build a Docker container image which will include all the necessary dependencies to build the application 
-   ```
+   ```bash
    docker build -t al2023-graalvm21:native-web .
    ```
 3. Build the application within the previously created build image
-   ```
+   ```bash
    docker run -it -v `pwd`:`pwd` -w `pwd` -v ~/.m2:/root/.m2 al2023-graalvm21:native-web mvn clean -Pnative package -DskipTests
    ```
 4. After the build finishes, you need to deploy the function:
- ```
+   ```bash
    sam deploy --guided
- ```
+   ```
+   or
+   ```bash
+   $ sam deploy --s3-bucket $CF_BUCKET --stack-name alt-pet-store-native --capabilities CAPABILITY_IAM
+   ```
 
 This will deploy your application and will attach an AWS API Gateway
 Once the deployment is finished you should see the following:
