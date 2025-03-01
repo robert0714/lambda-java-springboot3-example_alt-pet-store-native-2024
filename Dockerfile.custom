@@ -1,0 +1,76 @@
+FROM public.ecr.aws/lambda/provided:al2023
+
+RUN dnf update -y && \
+    dnf install -y \
+    libX11 \
+    libXext \
+    libXrender \
+    libXtst \
+    libXt \
+    mesa-libGL \
+    freetype \
+    fontconfig \
+    libX11-devel \
+    libXext-devel \
+    libXrender-devel \
+    libXtst-devel \
+    libXt-devel \
+    mesa-libGL-devel \
+    freetype-devel \
+    fontconfig-devel \
+    alsa-lib-devel \
+    tar \
+    alsa-lib
+ 
+
+COPY src/shell/native/bootstrap  ${LAMBDA_TASK_ROOT}/bootstrap 
+COPY target/googlemap-container-lambda-java-native-with-apikey  ${LAMBDA_TASK_ROOT}/googlemap-container-lambda-java-native-with-apikey
+
+
+COPY target/googlemap-container-lambda-java-native-with-apikey  ${LAMBDA_TASK_ROOT}/googlemap-container-lambda-java-native-with-apikey
+COPY target/libawt_headless.so  ${LAMBDA_TASK_ROOT}/libawt_headless.so
+COPY target/libawt_xawt.so  ${LAMBDA_TASK_ROOT}/libawt_xawt.so
+COPY target/libawt.so  ${LAMBDA_TASK_ROOT}/libawt.so
+COPY target/libfontmanager.so  ${LAMBDA_TASK_ROOT}/libfontmanager.so
+COPY target/libjava.so  ${LAMBDA_TASK_ROOT}/libjava.so
+COPY target/libjavajpeg.so  ${LAMBDA_TASK_ROOT}/libjavajpeg.so
+COPY target/libjvm.so  ${LAMBDA_TASK_ROOT}/libjvm.so
+COPY target/liblcms.so  ${LAMBDA_TASK_ROOT}/liblcms.so
+		 
+
+RUN chmod +x ${LAMBDA_TASK_ROOT}/bootstrap
+RUN chmod +x ${LAMBDA_TASK_ROOT}/googlemap-container-lambda-java-native-with-apikey
+WORKDIR ${LAMBDA_TASK_ROOT}
+COPY src/shell/native/bootstrap  ${LAMBDA_RUNTIME_DIR}/bootstrap 
+COPY target/googlemap-container-lambda-java-native-with-apikey  ${LAMBDA_RUNTIME_DIR}/googlemap-container-lambda-java-native-with-apikey
+
+
+COPY target/googlemap-container-lambda-java-native-with-apikey  ${LAMBDA_RUNTIME_DIR}/googlemap-container-lambda-java-native-with-apikey
+COPY target/libawt_headless.so  ${LAMBDA_RUNTIME_DIR}/libawt_headless.so
+COPY target/libawt_xawt.so  ${LAMBDA_RUNTIME_DIR}/libawt_xawt.so
+COPY target/libawt.so  ${LAMBDA_RUNTIME_DIR}/libawt.so
+COPY target/libfontmanager.so  ${LAMBDA_RUNTIME_DIR}/libfontmanager.so
+COPY target/libjava.so  ${LAMBDA_RUNTIME_DIR}/libjava.so
+COPY target/libjavajpeg.so  ${LAMBDA_RUNTIME_DIR}/libjavajpeg.so
+COPY target/libjvm.so  ${LAMBDA_RUNTIME_DIR}/libjvm.so
+COPY target/liblcms.so  ${LAMBDA_RUNTIME_DIR}/liblcms.so
+		 
+
+RUN chmod +x ${LAMBDA_RUNTIME_DIR}/bootstrap
+RUN chmod +x ${LAMBDA_RUNTIME_DIR}/googlemap-container-lambda-java-native-with-apikey
+WORKDIR ${LAMBDA_RUNTIME_DIR}
+
+
+# Graal VM
+ENV GRAAL_VERSION 21.0.2
+ENV ARCHITECTURE x64
+ENV GRAAL_FILENAME graalvm-community-jdk-${GRAAL_VERSION}_linux-${ARCHITECTURE}_bin.tar.gz
+RUN curl -4 -L https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-${GRAAL_VERSION}/${GRAAL_FILENAME} | tar -xvz
+RUN mv graalvm-community-openjdk-${GRAAL_VERSION}* /usr/lib/graalvm
+ENV JAVA_HOME /usr/lib/graalvm
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+# Set the CMD to your handler (could also be done as a parameter override outside of the Dockerfile)
+CMD ["${LAMBDA_TASK_ROOT}/bootstrap"]
+#ENTRYPOINT [ "sh", "-c", " ${LAMBDA_TASK_ROOT}/bootstrap"]
+# CMD [ "ls" ,"-la","/var/task" ]

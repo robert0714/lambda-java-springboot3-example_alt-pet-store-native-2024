@@ -31,12 +31,12 @@ Vagrant.configure("2") do |config|
   config.ssh.forward_agent = true
 
   config.vm.box = "bento/ubuntu-22.04"
-  config.vm.hostname = "sam.local.dev"
+  config.vm.hostname = "sam-native.local.dev"
 
   config.vm.network :private_network, ip: "10.100.198.101"   
   config.vm.provider "virtualbox" do |vb|
     vb.gui = false
-    vb.name = "sam"
+    vb.name = "sam-native"
     vb.memory = "5120"
     vb.cpus = "2"
   end

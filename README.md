@@ -190,4 +190,26 @@ If this is the issue then you can fix it by using the linux command: `dos2unix b
   public class Application {
   (ommitted...)
   ```  
+### AWT graphics with AWS Lambda not working in native
+* https://github.com/quarkusio/quarkus/issues/23998
+* https://clojurians-log.clojureverse.org/holy-lambda/2024-05-20
+  * https://docs.aws.amazon.com/lambda/latest/dg/images-create.html
 
+### Deploy Java Lambda functions with container images
+* https://docs.aws.amazon.com/lambda/latest/dg/java-image.html
+  * https://docs.aws.amazon.com/zh_tw/lambda/latest/dg/java-image.html
+    ```bash
+    docker buildx build -f Dockerfile.custom --platform linux/amd64 --provenance=false -t docker-image:test .
+    docker run --platform linux/amd64 -p 9000:8080 docker-image:test
+    curl "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'
+    curl "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"payload":"hello world!"}'
+  
+    curl "http://localhost:9000/2015-03-31/functions/function/invocations" \
+       --data  ' {"body": "{\n  \"startAddress\": \"\u57fa\u9686\u5e02\u4e2d\u6b63\u5340\u65b0\u8c50\u8857293\u865f\",\n  \"endAddress\": \"\u65b0\u5317\u5e02\u677f\u6a4b\u5340\u5e9c\u4e2d\u8def29-2\u865f\"\n}", "headers": {"Accept": "*/*", "Content-Length": "111", "Content-Type": "application/json", "Host": "127.0.0.1:3000", "User-Agent": "curl/7.81.0", "X-Forwarded-Port": "3000", "X-Forwarded-Proto": "http"}, "httpMethod": "POST", "isBase64Encoded": false, "multiValueHeaders": 
+       {"Accept": ["*/*"], "Content-Length": ["111"], "Content-Type": ["application/json"], "Host": ["127.0.0.1:3000"], "User-Agent": ["curl/7.81.0"], "X-Forwarded-Port": ["3000"], "X-Forwarded-Proto": ["http"]}, "multiValueQueryStringParameters": null, "path": "/distance", "pathParameters": {"any_path": "distance"}, "queryStringParameters": null, "requestContext": {"accountId": "123456789012", "apiId": "1234567890", "domainName": "127.0.0.1:3000", "extendedRequestId": null, "httpMethod": "POST", "identity": {"accountId": null, "apiKey": null, "caller": null, "cognitoAuthenticationProvider": null, "cognitoAuthenticationType": null, "cognitoIdentityPoolId": null, "sourceIp": "127.0.0.1", "user": null, "userAgent": "Custom User Agent String", "userArn": null}, "path": "/{any_path+}", "protocol": "HTTP/1.1", "requestId": "880aec1e-90f2-4da3-a5e9-f3e5ddc343a8", "requestTime": "01/Mar/2025:02:41:34 +0000", "requestTimeEpoch": 1740796894, "resourceId": "123456", "resourcePath": "/{any_path+}", "stage": null}, "resource": "/{any_path+}", "stageVariables": null, "version": "1.0"}'   
+
+    curl "http://localhost:9000/2015-03-31/functions/function/invocations" \
+       --data  ' {"body": "{\n  \"embebdDesc\": true ,\"startAddress\": \"\u57fa\u9686\u5e02\u4e2d\u6b63\u5340\u65b0\u8c50\u8857293\u865f\",\n  \"endAddress\": \"\u65b0\u5317\u5e02\u677f\u6a4b\u5340\u5e9c\u4e2d\u8def29-2\u865f\"\n}", "headers": {"Accept": "*/*", "Content-Length": "111", "Content-Type": "application/json", "Host": "127.0.0.1:3000", "User-Agent": "curl/7.81.0", "X-Forwarded-Port": "3000", "X-Forwarded-Proto": "http"}, "httpMethod": "POST", "isBase64Encoded": false, "multiValueHeaders": 
+       {"Accept": ["*/*"], "Content-Length": ["111"], "Content-Type": ["application/json"], "Host": ["127.0.0.1:3000"], "User-Agent": ["curl/7.81.0"], "X-Forwarded-Port": ["3000"], "X-Forwarded-Proto": ["http"]}, "multiValueQueryStringParameters": null, "path": "/distance", "pathParameters": {"any_path": "distance"}, "queryStringParameters": null, "requestContext": {"accountId": "123456789012", "apiId": "1234567890", "domainName": "127.0.0.1:3000", "extendedRequestId": null, "httpMethod": "POST", "identity": {"accountId": null, "apiKey": null, "caller": null, "cognitoAuthenticationProvider": null, "cognitoAuthenticationType": null, "cognitoIdentityPoolId": null, "sourceIp": "127.0.0.1", "user": null, "userAgent": "Custom User Agent String", "userArn": null}, "path": "/{any_path+}", "protocol": "HTTP/1.1", "requestId": "880aec1e-90f2-4da3-a5e9-f3e5ddc343a8", "requestTime": "01/Mar/2025:02:41:34 +0000", "requestTimeEpoch": 1740796894, "resourceId": "123456", "resourcePath": "/{any_path+}", "stage": null}, "resource": "/{any_path+}", "stageVariables": null, "version": "1.0"}'   
+    ```
+* https://docs.aws.amazon.com/lambda/latest/dg/java-samples.html
