@@ -215,3 +215,9 @@ If this is the issue then you can fix it by using the linux command: `dos2unix b
 * https://docs.aws.amazon.com/lambda/latest/dg/java-samples.html
 * https://www.youtube.com/watch?v=Y4ExJScVnPk
   * [Using GraalVM in Production by Alina Yurenko](https://www.slideshare.net/slideshow/bring-the-action-using-graalvm-in-production/273617001?from_search=0)
+* https://www.graalvm.org/latest/reference-manual/native-image/overview/BuildOutput/#recommendations
+
+
+### Using Java AWT Fonts gives unsatisfiedlinkerror while running native image
+* https://github.com/oracle/graal/issues/2729
+* https://github.com/oracle/graal/issues/10410
